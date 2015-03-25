@@ -16,7 +16,7 @@ var app = {
 	send: function(message){
 		$.ajax({
 		  // This is the url you should use to communicate with the parse API server.
-		  url: this.server,
+		  url: this.server + "/send",
 		  crossDomain: true,
 		  type: 'POST',
 		  data: JSON.stringify(message),
