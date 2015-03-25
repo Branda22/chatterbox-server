@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- dependencies -->
+    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <!-- your scripts -->
+    <script src="env/config.js"></script>
+    <script src="scripts/app.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <h1>chatterbox</h1>
+      <form id="send" >
+      <div class="roomSelector">
+        <select id="roomSelect">
+          <option value="newRoom">Add new room</option>
+        </select>
+      </div>
+        <div class="inputForm">
+          <input type="text" id="message" />
+          <input type="submit" class="submit">Submit</input>
+        </div>
+      </form>
+      <div id="chats"></div>
+    </div>
+    <script>
+    $(document).ready(function(){
+      app.init()
+      }); 
+      $( "#send" ).submit(function( event ) {
+        //alert( "Handler for .submit() called." );
+         app.handleSubmit();
+         event.preventDefault();
+      });
+      $("#roomSelect").change(function(){
+        var selection = $(":selected").text();
+        console.log("selected = " + selection);
+        if(this.value === "newRoom"){
+          var newRoom = prompt("Enter new room name: ");
+          app.addRoom(newRoom);
+        } else {
+          app.fetch(selection, true);
+        };
+      });
+      $(document).on('click', 'div .chat', (function(){
+        // alert("username?" + app.extractName($( this).text()));
+        app.addFriend(app.extractName($(this).text()));
+      }));
+    </script>
+  </body>
+</html>
