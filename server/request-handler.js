@@ -12,7 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 //var url = require("url");
-
+var messages = [];
 exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -29,6 +29,8 @@ exports.requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
+
+var message = {}
 
   var statusCode = 200;
   var headers = defaultCorsHeaders;
@@ -53,8 +55,7 @@ exports.requestHandler = function(request, response) {
       if(request.method === 'GET'){
         response.writeHead(statusCode, headers);
         var obj = {
-          name : "name",
-          results : []
+          results: messages
         }
         response.write(JSON.stringify(obj));
       } else if( request.method === 'POST'){
@@ -68,11 +69,12 @@ exports.requestHandler = function(request, response) {
         // });
       
         response.writeHead(statusCode, headers);
-        var obj = {
-          username : "Jono",
-          message  : 'Do my bidding!'
-        }
-        response.write(JSON.stringify(obj));
+        
+          message.username = "Jono";
+          message.message  = 'Do my bidding!';
+          messages.push(message);
+      
+        response.write(JSON.stringify(message));
       }
       break;
 
