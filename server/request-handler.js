@@ -12,6 +12,9 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 //var url_parts = require("url");
+var messages = {
+    results : []
+  };
 
 exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -30,7 +33,7 @@ exports.requestHandler = function(request, response) {
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
 
-  var messages = [];
+  
   var message = {};
   var serverUrls = {
    "/classes/messages" : true,
@@ -54,10 +57,12 @@ exports.requestHandler = function(request, response) {
       // }
       
       request.on('data', function(data){
-        console.log('on data');
-        message.username = data.username;
-        message.message = data.message;
-        messages.push(message);
+        console.log('on data | data = ' + data);
+        objData = JSON.parse(data);
+        message.username = '' + objData.username;
+        console.log('objData.username = ' + objData.username);
+        message.message = '' + objData.message;
+        messages.results.push(message);
       });
       request.on('end', function(){
         console.log('on data end');
@@ -68,16 +73,12 @@ exports.requestHandler = function(request, response) {
     } else if (request.method === 'GET'){
       console.log('GET');
       response.writeHead(statusCode, headers);
-      var obj = {
-        results : messages
-      }
-      response.write(JSON.stringify(obj));
+      response.write(JSON.stringify(messages));
       response.end();
     }
   }
 
 
- 
   
   // switch(request.url){
   //    case "/":
