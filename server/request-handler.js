@@ -80,6 +80,7 @@ var message = {}
 
     default :
       statusCode = 404; 
+      response.writeHead(statusCode, headers);
   }
 
 
