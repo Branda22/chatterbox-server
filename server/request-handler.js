@@ -11,8 +11,8 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-//var url = require("url");
-var messages = [];
+//var url_parts = require("url");
+
 exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -30,73 +30,107 @@ exports.requestHandler = function(request, response) {
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
 
-var message = {
-  
-}
-
+  var messages = [];
+  var message = {};
+  var serverUrls = {
+   "/classes/messages" : true,
+   "/send": true
+  }
   var statusCode = 200;
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
- 
-  console.log("request url is " + request.url);
-  switch(request.url){
-     case "/":
-      if(request.method === 'GET'){
-        response.writeHead(statusCode, headers);
-        var obj = {
-          results : messages
-        }
-        response.write(JSON.stringify(obj));
-      } else if( request.method === 'POST'){
-        statusCode = 201;
-        response.writeHead(statusCode, headers);
-      }
-      break;
-    case '/classes/room1':  
-      if(request.method === 'GET'){
-        response.writeHead(statusCode, headers);
-        var obj = {
-          results: messages
-        }
-        response.end(JSON.stringify(obj));
-      } else if( request.method === 'POST'){
-        headers['Content-Type'] = "text/json";
-        statusCode = 201;
+  if(!serverUrls.hasOwnProperty(request.url)){
+    console.log("404");
+    statusCode = 404; 
+    response.write('');
+    response.writeHead(statusCode, headers);    
+  }else{
+    if(request.method === 'POST'){
+      console.log('POST');
+      statusCode = 201;
+      headers['Content-Type'] = "application/json";
+      // for(head in request.headers){
+      //   console.log('request.headers = ' + request.headers[head]);  
+      // }
       
+      request.on('data', function(data){
+        console.log('on data');
+        message.username = data.username;
+        message.message = data.message;
+        messages.push(message);
+      });
+      request.on('end', function(){
+        console.log('on data end');
         response.writeHead(statusCode, headers);
-        
-          message.username = "Jono";
-          message.message  = 'Do my bidding!';
-          messages.push(message);
-      
-         response.end(JSON.stringify(message));
-      }
-      break;    
-    case "/classes/messages":
-      if(request.method === 'GET'){
-        response.writeHead(statusCode, headers);
-        var obj = {
-          results: messages
-        }
-        response.write(JSON.stringify(obj));
-      } else if( request.method === 'POST'){
-        headers['Content-Type'] = "text/json";
-        statusCode = 201;
-      
-        response.writeHead(statusCode, headers);
-        
-          message.username = "Jono";
-          message.message  = 'Do my bidding!';
-          messages.push(message);
-      
-        response.write(JSON.stringify(message));
-      }
-      break;
+        response.end();
+      });
 
-    default :
-      statusCode = 404; 
+    } else if (request.method === 'GET'){
+      console.log('GET');
       response.writeHead(statusCode, headers);
+      var obj = {
+        results : messages
+      }
+      response.write(JSON.stringify(obj));
+      response.end();
+    }
   }
+
+
+ 
+  
+  // switch(request.url){
+  //    case "/":
+  //    console.log("inside root");
+  //     if(request.method === 'GET'){
+  //     } else if( request.method === 'POST'){
+  //     }
+  //     break;
+  //   case '/classes/room1': 
+  //   console.log("Inside room1"); 
+  //     message = {
+  //       username : "Jono",
+  //       message : "Do my bidding!"
+  //     }
+  //     if(request.method === 'GET'){
+  //       response.writeHead(statusCode, headers);
+  //       response.end(JSON.stringify(message));
+  //     } else if( request.method === 'POST'){
+  //       headers['Content-Type'] = "application/json";
+  //       statusCode = 201;
+      
+  //       response.writeHead(statusCode, headers);
+  //         messages.push(message);
+      
+  //        response.end(JSON.stringify(message));
+  //     }
+  //     break;    
+  //   case "/classes/messages":
+  //    console.log("inside messsages");
+  //     if(request.method === 'GET'){
+  //       response.writeHead(statusCode, headers);
+  //       var obj = {
+  //         results: messages
+  //       }
+  //       response.write(JSON.stringify(obj));
+  //     } else if( request.method === 'POST'){
+  //       headers['Content-Type'] = "application/json";
+  //       statusCode = 201;
+      
+  //       response.writeHead(statusCode, headers);
+        
+  //         message.username = "Jono";
+  //         message.message  = 'Do my bidding!';
+  //         messages.push(message);
+      
+  //       response.write(JSON.stringify(message));
+  //     }
+  //     break;
+
+  //   default :
+  //     statusCode = 404; 
+  //     response.writeHead(statusCode, headers);
+  // }
 
 
 
@@ -132,7 +166,7 @@ var message = {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end();
+  
 };
 
 
