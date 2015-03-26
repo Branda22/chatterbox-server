@@ -14,6 +14,7 @@ var app = {
 	},
 	
 	send: function(message){
+		console.log(message);
 		$.ajax({
 		  // This is the url you should use to communicate with the node server.
 		  url: this.server + "/classes/messages",
@@ -27,6 +28,9 @@ var app = {
 		  error: function (data) {
 		    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
 		    console.error('chatterbox: Failed to send message : data = ' + data);
+		    for (var k in data){
+		      console.log('data[k] = ' + data[k]);	
+		    }
 		  }
 		});
 	},
@@ -51,19 +55,22 @@ var app = {
 		  contentType: 'application/json',
 		  success: function (data) {
 		    //console.log('chatterbox: Message fetched');
-		    console.log(data);
+		    for (var k in data){
+		      console.log('data[k] = ' + data[k]);	
+		    }
+		    
 		    var rooms = {};
-		    for (var i = 0; i < data.results.length; i++){
-		    	//console.log(data);
-		    	if (!rooms.hasOwnProperty(data.results[i].roomname)){
-		    		rooms[data.results[i].roomname] = data.results[i].roomname;
-			    	var optionString = "<option value='"+ data.results[i].roomname +"'>"+ data.results[i].roomname +"</option>";
-		    		$('#roomSelect').append(optionString);
-		    	}
-		    	var messageString = "<div class='chat'>Name: "+ data.results[i].username + " : " + app.cleanString(data.results[i].text) + "</div>"
-		    	$("#chats").append(messageString);
-		    };
-		    app.addFriend();
+		    // for (var i = 0; i < data.results.length; i++){
+		    // 	//console.log(data);
+		    // 	if (!rooms.hasOwnProperty(data.results[i].roomname)){
+		    // 		rooms[data.results[i].roomname] = data.results[i].roomname;
+			   //  	var optionString = "<option value='"+ data.results[i].roomname +"'>"+ data.results[i].roomname +"</option>";
+		    // 		$('#roomSelect').append(optionString);
+		    // 	}
+		    // 	var messageString = "<div class='chat'>Name: "+ data.results[i].username + " : " + app.cleanString(data.results[i].text) + "</div>"
+		    // 	$("#chats").append(messageString);
+		    // };
+		    // app.addFriend();
 		  },
 		  error: function (data) {
 		    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -77,7 +84,7 @@ var app = {
 	},
 
 	addMessage: function(username, text, roomname){
-		console.log("Hey, I made it");
+		console.log("Username = "  + username + " text = " + text + " roomname + " + roomname);
 		var message = {
 			"username" : username,
 			"text" : text,

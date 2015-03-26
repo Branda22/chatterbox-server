@@ -26,7 +26,7 @@ exports.requestHandler = function(request, response) {
   }else{
     if(request.method === 'POST'){
       statusCode = 201;
-      headers['Content-Type'] = "application/json";
+      //headers['Content-Type'] = "application/json";
       
       request.on('data', function(data){
         objData = JSON.parse(data);
@@ -34,6 +34,7 @@ exports.requestHandler = function(request, response) {
         message.message = '' + objData.message;
         message.roomname = 'lobby';
         message.id = ++counter;
+        console.log(message);
         messages.push(message);
       });
 
@@ -44,15 +45,20 @@ exports.requestHandler = function(request, response) {
 
     } else if (request.method === 'GET'){
       response.writeHead(statusCode, headers);
+      console.log(messages);
       response.end(JSON.stringify({results: messages}));
+    } else if (request.method === 'OPTIONS'){
+       response.writeHead(200, headers);
+       response.end();
     }
   }  
 };
 
 var defaultCorsHeaders = {
+  "Content-Type":"application/json",
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
   "access-control-allow-headers": "content-type, accept",
-  "access-control-max-age": 10 // Seconds.
+  "access-control-max-age": 10, // Seconds.
 };
 
