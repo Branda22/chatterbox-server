@@ -31,8 +31,6 @@ exports.requestHandler = function(request, response) {
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
-  console.log("Serving request type " + request.method + " for url " + request.url);
-
   
   var message = {};
   var serverUrls = {
@@ -44,34 +42,27 @@ exports.requestHandler = function(request, response) {
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
   if(!serverUrls.hasOwnProperty(request.url)){
-    console.log("404");
     statusCode = 404; 
-    response.write('');
     response.writeHead(statusCode, headers); 
     response.end();   
   }else{
     if(request.method === 'POST'){
-      console.log('POST');
       statusCode = 201;
       headers['Content-Type'] = "application/json";
       
       request.on('data', function(data){
-        console.log('on data | data = ' + data);
         objData = JSON.parse(data);
         message.username = '' + objData.username;
-        console.log('objData.username = ' + objData.username);
         message.message = '' + objData.message;
         messages.results.push(message);
       });
 
       request.on('end', function(){
-        console.log('on data end');
         response.writeHead(statusCode, headers);
         response.end();
       });
 
     } else if (request.method === 'GET'){
-      console.log('GET');
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(messages));
     }
