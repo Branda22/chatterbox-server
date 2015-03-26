@@ -30,7 +30,9 @@ exports.requestHandler = function(request, response) {
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
 
-var message = {}
+var message = {
+  
+}
 
   var statusCode = 200;
   var headers = defaultCorsHeaders;
@@ -42,8 +44,7 @@ var message = {}
       if(request.method === 'GET'){
         response.writeHead(statusCode, headers);
         var obj = {
-          name : "name",
-          results : []
+          results : messages
         }
         response.write(JSON.stringify(obj));
       } else if( request.method === 'POST'){
@@ -51,6 +52,26 @@ var message = {}
         response.writeHead(statusCode, headers);
       }
       break;
+    case '/classes/room1':  
+      if(request.method === 'GET'){
+        response.writeHead(statusCode, headers);
+        var obj = {
+          results: messages
+        }
+        response.end(JSON.stringify(obj));
+      } else if( request.method === 'POST'){
+        headers['Content-Type'] = "text/json";
+        statusCode = 201;
+      
+        response.writeHead(statusCode, headers);
+        
+          message.username = "Jono";
+          message.message  = 'Do my bidding!';
+          messages.push(message);
+      
+         response.end(JSON.stringify(message));
+      }
+      break;    
     case "/classes/messages":
       if(request.method === 'GET'){
         response.writeHead(statusCode, headers);
@@ -61,12 +82,6 @@ var message = {}
       } else if( request.method === 'POST'){
         headers['Content-Type'] = "text/json";
         statusCode = 201;
-        // request.on('data', function(){
-        //   // console.log("data = " + data);
-        // });
-        // request.on('end', function(){
-        //   // console.log("data = " + data);
-        // });
       
         response.writeHead(statusCode, headers);
         

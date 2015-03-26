@@ -16,7 +16,7 @@ var app = {
 	send: function(message){
 		$.ajax({
 		  // This is the url you should use to communicate with the parse API server.
-		  url: this.server + "/send",
+		  url: this.server + "/classes/messages",
 		  crossDomain: true,
 		  type: 'POST',
 		  data: JSON.stringify(message),
@@ -44,7 +44,7 @@ var app = {
 		};
 		$.ajax({
 		  // This is the url you should use to communicate with the parse API server.
-		  url: this.server,
+		  url: this.server + '/classes/messages',
 		  crossDomain: true,
 		  type: 'GET',
 		  data: query,
@@ -133,13 +133,11 @@ var app = {
 	init: function(){
 		this.fetch();
 		var that = this;
-		app.timer = setInterval(function(){
-			return that.fetch();
-		}, 10000);
+		// app.timer = setInterval(function(){
+		// 	return that.fetch();
+		// }, 10000);
 	}
 
-	// addUsername: function(username){
-	// 	this.username = username;
-	// }
+	
 };
 
