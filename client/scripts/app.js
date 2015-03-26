@@ -1,6 +1,6 @@
 // YOUR CODE HERE:
 var app = {
-	server: 'https://127.0.0.1:3000',
+	server: 'http://127.0.0.1:3000',
 	username: this.username,
 	timer: null,
 	friends: {},
@@ -17,8 +17,6 @@ var app = {
 		$.ajax({
 		  // This is the url you should use to communicate with the node server.
 		  url: this.server + "/classes/messages",
-		  logIt : function(){
-		  	console.log('url = ' + url)}(),
 		  crossDomain: true,
 		  type: 'POST',
 		  data: JSON.stringify(message),
