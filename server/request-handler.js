@@ -37,7 +37,8 @@ exports.requestHandler = function(request, response) {
   var message = {};
   var serverUrls = {
    "/classes/messages" : true,
-   "/send": true
+   "/send": true,
+   "/classes/room1" : true
   }
   var statusCode = 200;
   var headers = defaultCorsHeaders;
@@ -46,15 +47,13 @@ exports.requestHandler = function(request, response) {
     console.log("404");
     statusCode = 404; 
     response.write('');
-    response.writeHead(statusCode, headers);    
+    response.writeHead(statusCode, headers); 
+    response.end();   
   }else{
     if(request.method === 'POST'){
       console.log('POST');
       statusCode = 201;
       headers['Content-Type'] = "application/json";
-      // for(head in request.headers){
-      //   console.log('request.headers = ' + request.headers[head]);  
-      // }
       
       request.on('data', function(data){
         console.log('on data | data = ' + data);
@@ -64,6 +63,7 @@ exports.requestHandler = function(request, response) {
         message.message = '' + objData.message;
         messages.results.push(message);
       });
+
       request.on('end', function(){
         console.log('on data end');
         response.writeHead(statusCode, headers);
@@ -73,113 +73,11 @@ exports.requestHandler = function(request, response) {
     } else if (request.method === 'GET'){
       console.log('GET');
       response.writeHead(statusCode, headers);
-      response.write(JSON.stringify(messages));
-      response.end();
+      response.end(JSON.stringify(messages));
     }
-  }
-
-
-  
-  // switch(request.url){
-  //    case "/":
-  //    console.log("inside root");
-  //     if(request.method === 'GET'){
-  //     } else if( request.method === 'POST'){
-  //     }
-  //     break;
-  //   case '/classes/room1': 
-  //   console.log("Inside room1"); 
-  //     message = {
-  //       username : "Jono",
-  //       message : "Do my bidding!"
-  //     }
-  //     if(request.method === 'GET'){
-  //       response.writeHead(statusCode, headers);
-  //       response.end(JSON.stringify(message));
-  //     } else if( request.method === 'POST'){
-  //       headers['Content-Type'] = "application/json";
-  //       statusCode = 201;
-      
-  //       response.writeHead(statusCode, headers);
-  //         messages.push(message);
-      
-  //        response.end(JSON.stringify(message));
-  //     }
-  //     break;    
-  //   case "/classes/messages":
-  //    console.log("inside messsages");
-  //     if(request.method === 'GET'){
-  //       response.writeHead(statusCode, headers);
-  //       var obj = {
-  //         results: messages
-  //       }
-  //       response.write(JSON.stringify(obj));
-  //     } else if( request.method === 'POST'){
-  //       headers['Content-Type'] = "application/json";
-  //       statusCode = 201;
-      
-  //       response.writeHead(statusCode, headers);
-        
-  //         message.username = "Jono";
-  //         message.message  = 'Do my bidding!';
-  //         messages.push(message);
-      
-  //       response.write(JSON.stringify(message));
-  //     }
-  //     break;
-
-  //   default :
-  //     statusCode = 404; 
-  //     response.writeHead(statusCode, headers);
-  // }
-
-
-
-
-
-
-
-
-
-
-
-  // The outgoing status.
-
-  // See the note below about CORS headers.
-
-  // Tell the client we are sending them plain text.
-  //
-  // You will need to change this if you are sending something
-  // other than plain text, like JSON or HTML.
-
-  // .writeHead() writes to the request line and headers of the response,
-  // which includes the status and all headers.
-  // response.writeHead(statusCode, headers);
-  // var obj = {
-  //   name : "name",
-  //   results : []
-  // }
-  // response.write(JSON.stringify(obj));
-  // Make sure to always call response.end() - Node may not send
-  // anything back to the client until you do. The string you pass to
-  // response.end() will be the body of the response - i.e. what shows
-  // up in the browser.
-  //
-  // Calling .end "flushes" the response's internal buffer, forcing
-  // node to actually send all the data over to the client.
-  
+  }  
 };
 
-
-// These headers will allow Cross-Origin Resource Sharing (CORS).
-// This code allows this server to talk to websites that
-// are on different domains, for instance, your chat client.
-//
-// Your chat client is running from a url like file://your/chat/client/index.html,
-// which is considered a different domain.
-//
-// Another way to get around this restriction is to serve you chat
-// client from this domain by setting up static file serving.
 var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
