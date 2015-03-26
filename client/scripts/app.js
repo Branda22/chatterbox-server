@@ -15,8 +15,10 @@ var app = {
 	
 	send: function(message){
 		$.ajax({
-		  // This is the url you should use to communicate with the parse API server.
+		  // This is the url you should use to communicate with the node server.
 		  url: this.server + "/classes/messages",
+		  logIt : function(){
+		  	console.log('url = ' + url)}(),
 		  crossDomain: true,
 		  type: 'POST',
 		  data: JSON.stringify(message),
@@ -26,7 +28,7 @@ var app = {
 		  },
 		  error: function (data) {
 		    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-		    console.error('chatterbox: Failed to send message');
+		    console.error('chatterbox: Failed to send message : data = ' + data);
 		  }
 		});
 	},
@@ -47,7 +49,7 @@ var app = {
 		  url: this.server + '/classes/messages',
 		  crossDomain: true,
 		  type: 'GET',
-		  data: query,
+		  //data: query,
 		  contentType: 'application/json',
 		  success: function (data) {
 		    //console.log('chatterbox: Message fetched');
@@ -67,7 +69,7 @@ var app = {
 		  },
 		  error: function (data) {
 		    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-		    console.error('chatterbox: Failed to fetch message');
+		    console.log('chatterbox: Failed to fetch message');
 		  }
 		});
 	},

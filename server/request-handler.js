@@ -1,43 +1,21 @@
-/*************************************************************
 
-You should implement your request handler function in this file.
-
-requestHandler is already getting passed to http.createServer()
-in basic-server.js, but it won't work as is.
-
-You'll have to figure out a way to export this function from
-this file and include it in basic-server.js so that it actually works.
-
-*Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
-
-**************************************************************/
-//var url_parts = require("url");
-var messages = {
-    results : []
-  };
-
+var messages = [];
+var counter = messages.length;
 exports.requestHandler = function(request, response) {
-  // Request and Response come from node's http module.
-  //
-  // They include information about both the incoming request, such as
-  // headers and URL, and about the outgoing response, such as its status
-  // and content.
-  //
-  // Documentation for both request and response can be found in the HTTP section at
-  // http://nodejs.org/documentation/api/
-
-  // Do some basic logging.
-  //
-  // Adding more logging to your server can be an easy way to get passive
-  // debugging help, but you should always be careful about leaving stray
-  // console.logs in your code.
-  
+//var message = {
+//   username: 'shawndrost',
+//   text: 'trololo',
+//   roomname: '4chan'
+// };
+  console.log("Request Url :" + request.url + " Request Method " + request.method);
   var message = {};
+
   var serverUrls = {
    "/classes/messages" : true,
    "/send": true,
    "/classes/room1" : true
   }
+
   var statusCode = 200;
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
@@ -54,7 +32,9 @@ exports.requestHandler = function(request, response) {
         objData = JSON.parse(data);
         message.username = '' + objData.username;
         message.message = '' + objData.message;
-        messages.results.push(message);
+        message.roomname = 'lobby';
+        message.id = ++counter;
+        messages.push(message);
       });
 
       request.on('end', function(){
@@ -64,7 +44,7 @@ exports.requestHandler = function(request, response) {
 
     } else if (request.method === 'GET'){
       response.writeHead(statusCode, headers);
-      response.end(JSON.stringify(messages));
+      response.end(JSON.stringify({results: messages}));
     }
   }  
 };
